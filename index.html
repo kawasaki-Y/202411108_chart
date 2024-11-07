@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Chart with Real-Time Update</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+
+<body>
+  <div class="chart-container" style="width: 600px; margin: 20px auto;">
+    <canvas id="mychart"></canvas>
+  </div>
+
+  <div class="input-table-container" style="margin: 20px auto; text-align: center; width: 600px;">
+    <table class="input-table">
+      <thead>
+        <tr>
+          <th>Day</th>
+          <th>Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td><input type="text" class="data-input" data-day="1"></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td><input type="text" class="data-input" data-day="2"></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td><input type="text" class="data-input" data-day="3"></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td><input type="text" class="data-input" data-day="4"></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td><input type="text" class="data-input" data-day="5"></td>
+        </tr>
+        <!-- Add more rows as needed -->
+      </tbody>
+    </table>
+    <button id="downloadImage" class="btn slide-bg">Download Chart as Image</button>
+  </div>
+</body>
+
+</html>
