@@ -1,86 +1,105 @@
 body {
   font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background-color: #f0f2f5;
   margin: 0;
   padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
 
-.chart-container {
+.container {
+  width: 90%;
+  max-width: 1200px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.unit-text {
+  font-size: 12px;
+  color: gray;
+  margin-top: 5px;
+}
+
+.input-field {
+  width: 200px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-top: 10px;
   margin-bottom: 20px;
 }
 
 .input-table-container {
-  text-align: left;
+  overflow-x: auto;
 }
 
 .input-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  font-size: 14px;
 }
 
 .input-table th,
 .input-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 6px;
   text-align: center;
 }
 
 .input-table th {
-  background-color: #f2f2f2;
+  background-color: #f7f7f7;
   font-weight: bold;
+  white-space: nowrap;
 }
 
-.data-input {
-  width: 100%;
-  box-sizing: border-box;
+.input-table td {
+  background-color: #fcfcfc;
+}
+
+.input-table input {
+  width: 60px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.result-balance {
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.highlighted {
+  background-color: #f9f2f4;
+  color: #d9534f;
+  font-weight: bold;
 }
 
 .btn {
-  padding: 10px 20px;
-  margin: 10px;
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
   border: none;
-  cursor: pointer;
+  padding: 8px 16px;
   border-radius: 5px;
-  transition: background-color 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+  margin: 10px;
   font-weight: bold;
+  transition: background-color 0.3s;
+  font-size: 14px;
 }
 
-.btn.filled {
-  background-color: #333;
+.btn:hover {
+  background-color: #0056b3;
 }
 
-.btn.filled:hover {
-  background-color: #555;
-}
-
-.btn.slide-bg {
-  position: relative;
-  overflow: hidden;
-}
-
-.btn.slide-bg::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: #4CAF50;
-  transform: translateX(-100%);
-  transition: transform 0.3s;
-}
-
-.btn.slide-bg:hover::before {
-  transform: translateX(0);
-}
-
-.btn.slide-bg:hover {
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+.chart-container {
+  margin-top: 20px;
 }

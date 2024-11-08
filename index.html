@@ -1,53 +1,135 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Chart with Real-Time Update</title>
+  <title>5日単位の資金繰り計画</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
   <script defer src="app.js"></script>
 </head>
 
 <body>
-  <div class="chart-container" style="width: 600px; margin: 20px auto;">
-    <canvas id="mychart"></canvas>
-  </div>
+  <div class="container">
+    <div class="header">
+      <label for="initialBalance">初期口座残高:</label>
+      <input type="number" id="initialBalance" placeholder="初期残高を入力" class="input-field" />
+      <div class="unit-text">単位：千円</div>
+      <button id="downloadExcel" class="btn">エクセルをダウンロード</button>
+      <input type="file" id="uploadExcel" accept=".xlsx, .xls" class="btn" style="margin-top: 10px;">
+    </div>
 
-  <div class="input-table-container" style="margin: 20px auto; text-align: center; width: 600px;">
-    <table class="input-table">
-      <thead>
-        <tr>
-          <th>Day</th>
-          <th>Balance</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td><input type="text" class="data-input" data-day="1"></td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td><input type="text" class="data-input" data-day="2"></td>
-        </tr>
-        <tr>
-          <td>3</td>
-          <td><input type="text" class="data-input" data-day="3"></td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td><input type="text" class="data-input" data-day="4"></td>
-        </tr>
-        <tr>
-          <td>5</td>
-          <td><input type="text" class="data-input" data-day="5"></td>
-        </tr>
-        <!-- Add more rows as needed -->
-      </tbody>
-    </table>
-    <button id="downloadImage" class="btn slide-bg">Download Chart as Image</button>
+    <div class="input-table-container">
+      <table class="input-table">
+        <tbody>
+          <tr>
+            <td>項目</td>
+            <td>10日</td>
+            <td>15日</td>
+            <td>20日</td>
+            <td>25日</td>
+            <td>月末</td>
+          </tr>
+          <tr>
+            <td>売上着金額</td>
+            <td><input type="number" class="input-sales"></td>
+            <td><input type="number" class="input-sales"></td>
+            <td><input type="number" class="input-sales"></td>
+            <td><input type="number" class="input-sales"></td>
+            <td><input type="number" class="input-sales"></td>
+          </tr>
+          <tr>
+            <td>経常支出額</td>
+            <td><input type="number" class="input-expenses"></td>
+            <td><input type="number" class="input-expenses"></td>
+            <td><input type="number" class="input-expenses"></td>
+            <td><input type="number" class="input-expenses"></td>
+            <td><input type="number" class="input-expenses"></td>
+          </tr>
+          <tr>
+            <td>経常収支</td>
+            <td class="result-operating"></td>
+            <td class="result-operating"></td>
+            <td class="result-operating"></td>
+            <td class="result-operating"></td>
+            <td class="result-operating"></td>
+          </tr>
+          <tr>
+            <td>借入収入額</td>
+            <td><input type="number" class="input-loan-income"></td>
+            <td><input type="number" class="input-loan-income"></td>
+            <td><input type="number" class="input-loan-income"></td>
+            <td><input type="number" class="input-loan-income"></td>
+            <td><input type="number" class="input-loan-income"></td>
+          </tr>
+          <tr>
+            <td>借入返済額</td>
+            <td><input type="number" class="input-loan-repayment"></td>
+            <td><input type="number" class="input-loan-repayment"></td>
+            <td><input type="number" class="input-loan-repayment"></td>
+            <td><input type="number" class="input-loan-repayment"></td>
+            <td><input type="number" class="input-loan-repayment"></td>
+          </tr>
+          <tr>
+            <td>財務収支</td>
+            <td class="result-financial"></td>
+            <td class="result-financial"></td>
+            <td class="result-financial"></td>
+            <td class="result-financial"></td>
+            <td class="result-financial"></td>
+          </tr>
+          <tr>
+            <td>株式出資金額</td>
+            <td><input type="number" class="input-equity-investment"></td>
+            <td><input type="number" class="input-equity-investment"></td>
+            <td><input type="number" class="input-equity-investment"></td>
+            <td><input type="number" class="input-equity-investment"></td>
+            <td><input type="number" class="input-equity-investment"></td>
+          </tr>
+          <tr>
+            <td>株式売却額</td>
+            <td><input type="number" class="input-equity-sale"></td>
+            <td><input type="number" class="input-equity-sale"></td>
+            <td><input type="number" class="input-equity-sale"></td>
+            <td><input type="number" class="input-equity-sale"></td>
+            <td><input type="number" class="input-equity-sale"></td>
+          </tr>
+          <tr>
+            <td>補助金額</td>
+            <td><input type="number" class="input-subsidy"></td>
+            <td><input type="number" class="input-subsidy"></td>
+            <td><input type="number" class="input-subsidy"></td>
+            <td><input type="number" class="input-subsidy"></td>
+            <td><input type="number" class="input-subsidy"></td>
+          </tr>
+          <tr>
+            <td>収支合計</td>
+            <td class="result-total"></td>
+            <td class="result-total"></td>
+            <td class="result-total"></td>
+            <td class="result-total"></td>
+            <td class="result-total"></td>
+          </tr>
+          <tr>
+            <td class="highlighted">口座残高</td>
+            <td class="result-balance"></td>
+            <td class="result-balance"></td>
+            <td class="result-balance"></td>
+            <td class="result-balance"></td>
+            <td class="result-balance"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <button id="calculateBalance" class="btn">計算してグラフを更新</button>
+    <button id="downloadImage" class="btn">グラフを画像でダウンロード</button>
+
+    <div class="chart-container">
+      <canvas id="mychart"></canvas>
+    </div>
   </div>
 </body>
 
