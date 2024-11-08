@@ -38,52 +38,53 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-  function updateCalculations() {
-    const initialBalance = Math.floor(parseFloat(initialBalanceInput.value)) || 0;
-    let previousBalance = initialBalance;
+ function updateCalculations() {
+  const initialBalance = Math.floor(parseFloat(initialBalanceInput.value)) || 0;
+  let previousBalance = initialBalance;
 
-    const salesInputs = document.querySelectorAll('.input-sales');
-    const expensesInputs = document.querySelectorAll('.input-expenses');
-    const loanIncomeInputs = document.querySelectorAll('.input-loan-income');
-    const loanRepaymentInputs = document.querySelectorAll('.input-loan-repayment');
-    const equityInvestmentInputs = document.querySelectorAll('.input-equity-investment');
-    const equitySaleInputs = document.querySelectorAll('.input-equity-sale');
-    const subsidyInputs = document.querySelectorAll('.input-subsidy');
+  const salesInputs = document.querySelectorAll('.input-sales');
+  const expensesInputs = document.querySelectorAll('.input-expenses');
+  const loanIncomeInputs = document.querySelectorAll('.input-loan-income');
+  const loanRepaymentInputs = document.querySelectorAll('.input-loan-repayment');
+  const equityInvestmentInputs = document.querySelectorAll('.input-equity-investment');
+  const equitySaleInputs = document.querySelectorAll('.input-equity-sale');
+  const subsidyInputs = document.querySelectorAll('.input-subsidy');
 
-    const operatingResults = document.querySelectorAll('.result-operating');
-    const financialResults = document.querySelectorAll('.result-financial');
-    const totalResults = document.querySelectorAll('.result-total');
-    const balanceResults = document.querySelectorAll('.result-balance');
+  const operatingResults = document.querySelectorAll('.result-operating');
+  const financialResults = document.querySelectorAll('.result-financial');
+  const totalResults = document.querySelectorAll('.result-total');
+  const balanceResults = document.querySelectorAll('.result-balance');
 
-    const chartData = [];
+  const chartData = [];
 
-    for (let i = 0; i < salesInputs.length; i++) {
-      const sales = Math.floor(parseFloat(salesInputs[i].value)) || 0;
-      const expenses = Math.floor(parseFloat(expensesInputs[i].value)) || 0;
-      const loanIncome = Math.floor(parseFloat(loanIncomeInputs[i].value)) || 0;
-      const loanRepayment = Math.floor(parseFloat(loanRepaymentInputs[i].value)) || 0;
-      const equityInvestment = Math.floor(parseFloat(equityInvestmentInputs[i].value)) || 0;
-      const equitySale = Math.floor(parseFloat(equitySaleInputs[i].value)) || 0;
-      const subsidy = Math.floor(parseFloat(subsidyInputs[i].value)) || 0;
+  for (let i = 0; i < salesInputs.length; i++) {
+    const sales = Math.floor(parseFloat(salesInputs[i].value)) || 0;
+    const expenses = Math.floor(parseFloat(expensesInputs[i].value)) || 0;
+    const loanIncome = Math.floor(parseFloat(loanIncomeInputs[i].value)) || 0;
+    const loanRepayment = Math.floor(parseFloat(loanRepaymentInputs[i].value)) || 0;
+    const equityInvestment = Math.floor(parseFloat(equityInvestmentInputs[i].value)) || 0;
+    const equitySale = Math.floor(parseFloat(equitySaleInputs[i].value)) || 0;
+    const subsidy = Math.floor(parseFloat(subsidyInputs[i].value)) || 0;
 
-      const operatingBalance = sales - expenses;
-      const financialBalance = operatingBalance + loanIncome - loanRepayment;
-      const totalBalance = financialBalance + equityInvestment - equitySale + subsidy;
-      const currentBalance = previousBalance + totalBalance;
+    const operatingBalance = sales - expenses;
+    const financialBalance = operatingBalance + loanIncome - loanRepayment;
+    const totalBalance = financialBalance + equityInvestment - equitySale + subsidy;
+    const currentBalance = previousBalance + totalBalance;
 
-      operatingResults[i].textContent = operatingBalance.toLocaleString();
-      financialResults[i].textContent = financialBalance.toLocaleString();
-      totalResults[i].textContent = totalBalance.toLocaleString();
-      balanceResults[i].textContent = currentBalance.toLocaleString();
+    operatingResults[i].textContent = operatingBalance.toLocaleString();
+    financialResults[i].textContent = financialBalance.toLocaleString();
+    totalResults[i].textContent = totalBalance.toLocaleString();
+    balanceResults[i].textContent = currentBalance.toLocaleString();
 
-      chartData.push(currentBalance);
-      previousBalance = currentBalance;
-    }
-
-    // チャートを更新
-    myChart.data.datasets[0].data = chartData;
-    myChart.update();
+    chartData.push(currentBalance);
+    previousBalance = currentBalance;
   }
+
+  // チャートを更新
+  myChart.data.datasets[0].data = chartData;
+  myChart.update();
+}
+
 
   // エクセルファイルアップロード機能
   fileInput.addEventListener('change', function (event) {
@@ -96,48 +97,46 @@ document.addEventListener("DOMContentLoaded", function () {
         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
         const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
-// セルに数値を反映（最初の行はスキップし、各行の最初の列もスキップ）
-for (let i = 1; i < sheetData.length; i++) { // 最初の行をスキップ
-  const row = sheetData[i];
-  if (row) {
-    // i + 1 にすることで、HTMLテーブルの2行目以降（売上着金額行から）に対応
-    const inputs = document.querySelectorAll(`.input-table tr:nth-child(${i + 1}) input`);
-    for (let j = 1; j < row.length; j++) { // 最初の列をスキップして反映
-      const value = parseFloat(row[j]);
-      if (inputs[j - 1] && !isNaN(value)) { // j - 1で入力フィールドと正しく対応
-        inputs[j - 1].value = Math.floor(value); // 小数点以下切り捨て
-      }
-    }
-  }
-}
-updateCalculations(); // 更新を反映
+        // セルに数値を反映（最初の行はスキップし、各行の最初の列もスキップ）
+        for (let i = 1; i < sheetData.length; i++) { // 最初の行をスキップ
+          const row = sheetData[i];
+          if (row) {
+            // i + 1 にすることで、HTMLテーブルの2行目以降（売上着金額行から）に対応
+            const inputs = document.querySelectorAll(`.input-table tr:nth-child(${i + 1}) input`);
+            for (let j = 1; j < row.length; j++) { // 最初の列をスキップして反映
+              const value = parseFloat(row[j]);
+              if (inputs[j - 1] && !isNaN(value)) { // j - 1で入力フィールドと正しく対応
+                inputs[j - 1].value = Math.floor(value); // 小数点以下切り捨て
+              }
+            }
+          }
+        }
+        updateCalculations(); // 更新を反映
       };
       reader.readAsArrayBuffer(file);
     }
   });
 
-  // エクセルファイルをダウンロードする機能
-  downloadExcelButton.addEventListener('click', function () {
-    const rows = document.querySelectorAll('tbody tr');
-    const data = [['項目', ...myChart.data.labels]];
+  // グラフを画像としてダウンロードする機能
+  function setCanvasBackground() {
+  const canvas = document.getElementById('mychart');
+  const ctx = canvas.getContext('2d');
 
-    rows.forEach(row => {
-      const rowData = [row.cells[0].textContent];
-      row.querySelectorAll('input').forEach(input => {
-        rowData.push(input.value || '');
-      });
-      row.querySelectorAll('td.result').forEach(cell => {
-        rowData.push(cell.textContent || '');
-      });
-      data.push(rowData);
-    });
+  // 背景色を白で塗りつぶす
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-over';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
 
-    const worksheet = XLSX.utils.aoa_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, '資金計画');
-
-    XLSX.writeFile(workbook, '資金計画.xlsx');
-  });
+downloadImageButton.addEventListener('click', function () {
+  setCanvasBackground(); // 背景色を設定
+  const link = document.createElement('a');
+  link.download = 'chart-image.png';
+  link.href = myChart.toBase64Image();
+  link.click();
+});
 
   // 入力イベントを追加してリアルタイムで計算を更新
   const inputs = document.querySelectorAll('.input-table input, #initialBalance');
