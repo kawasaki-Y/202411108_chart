@@ -11,15 +11,22 @@
 
 <body>
   <div class="container">
+    <!-- ブロック要素で上部に必要な要素を揃えた -->
     <div class="header">
       <label for="initialBalance">初期口座残高:</label>
+      <!-- 入力フィールドの種類を決定 -->
       <input type="number" id="initialBalance" placeholder="初期残高を入力" class="input-field" />
       <div class="unit-text">単位：千円</div>
+      <!-- ボタン要素の識別 -->
       <button id="downloadExcel" class="btn">エクセルをダウンロード</button>
+      <!-- ファイルアップロード箇所 -->
       <input type="file" id="uploadExcel" accept=".xlsx, .xls" class="btn" style="margin-top: 10px;">
     </div>
 
+  <!-- テーブルで資金繰り表を作成 -->
     <div class="input-table-container">
+      <!-- 各<tr>タグで1つの行を、各行内に含まれる<td>の数によって、テーブルの列を形成する -->
+        <!--input typeがある場合は入力を、無い箇所は結果だけを表示  -->
       <table class="input-table">
         <tbody>
           <tr>
@@ -121,11 +128,13 @@
         </tbody>
       </table>
     </div>
-
+    <!--あまり必要性は無いが、ボタンを設置してJSのgetElementByIdでグラフを更新する  -->
     <button id="calculateBalance" class="btn">計算してグラフを更新</button>
+    <!-- ボタンを設置して、JSで画像ダウンロードする -->
     <button id="downloadImage" class="btn">グラフを画像でダウンロード</button>
-
+    <!-- ここからチャート-->
     <div class="chart-container">
+      <!-- canvas要素を作って、chart.jsでグラフを描画する（JSで設定している）-->
       <canvas id="mychart"></canvas>
     </div>
   </div>

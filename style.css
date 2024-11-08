@@ -1,3 +1,4 @@
+/* 背面の薄緑の設定 */
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #e6f7f5;
@@ -5,7 +6,7 @@ body {
   margin: 0;
   padding: 0;
 }
-
+/* テーブルとチャートの設定 */
 .container {
   max-width: 1200px;
   margin: 30px auto;
@@ -14,7 +15,7 @@ body {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
 }
-
+/* ヘッダー要素は水平に最適配置、垂直に中央揃え、アイテム間に均等な空間、ウインドウ幅が狭くなったら折り返し */
 .header {
   display: flex;
   align-items: center;
@@ -22,13 +23,13 @@ body {
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
-
+/* ヘッダーの初期口座残高 */
 .header label {
   font-size: 18px;
   font-weight: bold;
   color: #007d7d;
 }
-
+/* 初期残高入力フォーム */
 .input-field {
   padding: 8px;
   border: 1px solid #007d7d;
@@ -37,7 +38,7 @@ body {
   margin-left: 10px;
   font-size: 16px;
 }
-
+/* エクセルダウンロード、ファイルアップロード、グラフ更新、画像DL箇所は同じ色、同じ大きさで統一 */
 .btn {
   padding: 10px 20px;
   background-color: #009999;
@@ -49,69 +50,65 @@ body {
   transition: background-color 0.3s;
   margin-top: 10px;
 }
-
+/* ボタンのカーソルホバー時の演出 */
 .btn:hover {
   background-color: #007d7d;
 }
-
+/* 単位：千円の箇所 */
 .unit-text {
   font-size: 14px;
   color: #007d7d;
   margin-left: 10px;
 }
-
+/* テーブルのセルでコードブロックが画面幅を超えるとき、スクロールバーが出現する*/
 .input-table-container {
   overflow-x: auto;
   margin-top: 20px;
 }
-
+/* テーブルのセルのサイズと、枠線を調整 */
 .input-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-
-.input-table td,
-.input-table th {
+/* 各セルの枠を設定 */
+.input-table td {
   padding: 10px;
   text-align: center;
   border: 1px solid #ddd;
 }
-
-.input-table th {
-  background-color: #009999;
-  color: #fff;
-}
-
+/* nth-child(even)で偶数番目の<tr>（テーブル行）要素にスタイルを適用します。 */
 .input-table tr:nth-child(even) {
   background-color: #e0f5f5;
 }
-
+/* nth-child(odd)で奇数番目の<tr>（テーブル行）要素にスタイルを適用します。 */
 .input-table tr:nth-child(odd) {
   background-color: #f9fdfd;
 }
-
+/* 口座残高の表記 */
 .highlighted {
   font-weight: bold;
   color: #007d7d;
 }
-
+/* チャートの位置調節 */
 .chart-container {
   margin-top: 30px;
 }
-
+/* 画面の幅が768px以下の時に、レイアウト変更 */
 @media screen and (max-width: 768px) {
+  /* .header内の要素を縦方向（列）に配置します。通常は横方向（行）に並べられているものを、縦に並べるようにする。 */
+  /* さらに.header内の要素を左揃えにしている。 */
   .header {
     flex-direction: column;
     align-items: flex-start;
   }
-
+/* 左側のマージンをゼロにして、画面いっぱいに表示される様にする */
   .input-field {
     width: 100%;
     margin-left: 0;
     margin-top: 10px;
   }
-
+/* ボタンのサイズを大きくしている*/
   .btn {
     width: 100%;
   }
