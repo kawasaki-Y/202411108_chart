@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fileInput = document.getElementById('uploadExcel');
   const downloadExcelButton = document.getElementById('downloadExcel');
 
-  // チャートの作成
+  // チャートの作成箇所
   const myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-
+  
+// ここから計算ロジック
  function updateCalculations() {
   const initialBalance = Math.floor(parseFloat(initialBalanceInput.value)) || 0;
   let previousBalance = initialBalance;
@@ -83,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
     previousBalance = currentBalance;
   }
 
-  // チャートを更新
+  // チャートを更新する機能
   myChart.data.datasets[0].data = chartData;
   myChart.update();
 }

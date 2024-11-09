@@ -148,7 +148,7 @@
 ・Y軸のタイトルを表示し、「残高」と書くように設定している。
 4.2.1.3 ticks: { callback: function(value) { ... } }
 ・Y軸の目盛りに数字を表示する際のルールを決めている。
-callback: function(value):の関数を使って、数字が表示される前に少し加工する設定を行っている。この関数では、「Math.floor(value).toLocaleString()」を使って、数値を小数点以下を切り捨てて（floor(value)）、カンマ区切りの形式で表示（toLocaleString）するようにしています（例えば1000は「1,000」と表示）。
+callback: function(value):の関数を使って、数字が表示される前に少し加工する設定を行っている。この関数では、「Math.floor(value).toLocaleString()」を使って、数値を小数点以下を切り捨てて（floor(value)）、カンマ区切りの形式で表示（toLocaleString）するようにしている（例えば1000は「1,000」と表示）。
 
 ブロック❸
 function updateCalculations() {の関数を使って、最初の口座残高から始めて、売上や経費など2則演算して、最終的な口座残高を計算している。
@@ -178,4 +178,149 @@ totalResults: 合計の結果を表示する場所。
 balanceResults: 最終残高を表示する場所。
 5. const chartData = [];
 意味: 空のリスト「chartData」を作っている。これは後でグラフに表示するためのデータを入れるためである。
-6. 
+
+ブロック❹
+ここからは売上、支出、借入収入、借入返済、株式投資、株式売却、補助金といった財務データを入力して、経常収支、財務収支、収支合計、口座残高を計算⇨それをテーブルとグラフに同時反映している
+
+「for (let i = 0; i < salesInputs.length; i++) {」
+salesInputs.length の数だけ繰り返し処理を行っている。
+これは、テーブルの列（ 月ごとのデータ）ごとに計算を行うためである
+
+「const sales = Math.floor(parseFloat(salesInputs[i].value)) || 0;」
+「const expenses = Math.floor(parseFloat(expensesInputs[i].value)) || 0;」
+各入力欄の値を parseFloat() で数値に変換し、小数点以下を Math.floor() で切り捨てている。
+もし値が NaN（無効な数値）の場合、|| 0 により 0 を代入する。
+sales は売上額、expenses は経常支出額である。
+
+
+for (let i = 0; i < salesInputs.length; i++) {
+salesInputs.length の数だけ繰り返し処理を行います。テーブルの列ごとに計算を行うために設定した。
+
+const sales = Math.floor(parseFloat(salesInputs[i].value)) || 0;
+const expenses = Math.floor(parseFloat(expensesInputs[i].value)) || 0;
+const loanIncome = Math.floor(parseFloat(loanIncomeInputs[i].value)) || 0;
+const loanRepayment = Math.floor(parseFloat(loanRepaymentInputs[i].value)) || 0;
+const equityInvestment = Math.floor(parseFloat(equityInvestmentInputs[i].value)) || 0;
+const equitySale = Math.floor(parseFloat(equitySaleInputs[i].value)) || 0;
+const subsidy = Math.floor(parseFloat(subsidyInputs[i].value)) || 0;
+各入力欄の値を parseFloat() で数値に変換し、小数点以下を Math.floor() で切り捨てている。
+もし値が NaN（無効な数値）の場合、|| 0 により 0 を代入している。
+
+
+const operatingBalance = sales - expenses;
+operatingBalance は、売上から経常支出を引いた結果（経常収支）です。
+
+const financialBalance = operatingBalance + loanIncome - loanRepayment;
+financialBalance は、経常収支に借入収入を加え、借入返済を引いた結果（財務収支）です。
+
+const totalBalance = financialBalance + equityInvestment - equitySale + subsidy;
+totalBalance は、財務収支に株式出資金を加え、株式売却額を引き、さらに補助金を加えた結果（収支合計）です。
+
+const currentBalance = previousBalance + totalBalance;
+currentBalance は、前回の口座残高に収支合計を加えた結果です。このループが繰り返されることで、各期間の口座残高が更新されます。
+
+operatingResults[i].textContent = operatingBalance.toLocaleString();
+financialResults[i].textContent = financialBalance.toLocaleString();
+totalResults[i].textContent = totalBalance.toLocaleString();
+balanceResults[i].textContent = currentBalance.toLocaleString();
+計算結果をテーブルの該当セルに表示します。toLocaleString() によって、数値がカンマ区切りで表示されます。
+
+chartData.push(currentBalance);
+previousBalance = currentBalance;
+chartData 配列に currentBalance を追加し、次のループ用に previousBalance を現在の残高に更新します。
+
+このコードは、入力データを基に各計算を行い、結果をテーブルに反映し、グラフを更新するためのものです。それぞれの計算は累積して次の期間に影響するように設計されています。
+
+ブロック❺
+1. チャートの更新
+myChart.data.datasets[0].data = chartData;
+myChart.update();
+ここで、chartData配列がmyChart（Chart.jsを代入した変数）に新しいデータとして適用され、myChart.update()でグラフが再描画される
+2. エクセルファイルアップロード機能
+fileInput.addEventListener('change', function (event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+      const sheetData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+      // セルに数値を反映（最初の行はスキップし、各行の最初の列もスキップ）
+      for (let i = 1; i < sheetData.length; i++) { // 最初の行をスキップ
+        const row = sheetData[i];
+        if (row) {
+          const inputs = document.querySelectorAll(`.input-table tr:nth-child(${i + 1}) input`);
+          for (let j = 1; j < row.length; j++) { // 最初の列をスキップして反映
+            const value = parseFloat(row[j]);
+            if (inputs[j - 1] && !isNaN(value)) { // j - 1で入力フィールドと正しく対応
+              inputs[j - 1].value = Math.floor(value); // 小数点以下切り捨て
+            }
+          }
+        }
+      }
+      updateCalculations(); // 更新を反映
+    };
+    reader.readAsArrayBuffer(file);
+  }
+});
+fileInput要素のchangeイベントをリッスンし、エクセルファイルがアップロードされたときに処理を行っている。
+FileReaderを使用してファイルを読み込み、XLSXライブラリを使ってエクセルデータを解析している。
+取得したデータをテーブルの各入力欄に反映している。最初の行と最初の列はスキップされるように設定している。
+入力欄にデータが反映された後、updateCalculations()で計算とグラフの更新が行う仕様としている。
+3. グラフを画像としてダウンロードする機能
+
+function setCanvasBackground() {
+  const canvas = document.getElementById('mychart');
+  const ctx = canvas.getContext('2d');
+
+  // 背景色を白で塗りつぶす
+  ctx.save();
+  ctx.globalCompositeOperation = 'destination-over';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
+
+downloadImageButton.addEventListener('click', function () {
+  setCanvasBackground(); // 背景色を設定
+  const link = document.createElement('a');
+  link.download = 'chart-image.png';
+  link.href = myChart.toBase64Image();
+  link.click();
+});
+setCanvasBackground()関数で、キャンバスの背景色を白に設定し、真っ黒な画像が生成されないようにしている。これを設定しないと、背景が黒い状態でDLされてしまった。
+downloadImageButtonのclickイベントで、この関数を実行して背景色を設定した後、グラフをPNG画像としてダウンロードする。
+
+4. 入力イベントでリアルタイム計算
+
+const inputs = document.querySelectorAll('.input-table input, #initialBalance');
+inputs.forEach(input => {
+  input.addEventListener('input', updateCalculations);
+
+  // Enterキーで次の入力欄に移動する設定
+  input.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      const currentRow = input.closest('tr');
+      const currentColIndex = Array.from(currentRow.children).indexOf(input.parentElement);
+      let nextRow = currentRow.nextElementSibling;
+
+      // 次の行に移動。最後の行だった場合は終了
+      while (nextRow && !nextRow.querySelectorAll('input')[currentColIndex]) {
+        nextRow = nextRow.nextElementSibling;
+      }
+
+      if (nextRow) {
+        const nextInput = nextRow.children[currentColIndex]?.querySelector('input');
+        if (nextInput) {
+          nextInput.value = ''; // 次の入力欄を空にして、値を引き継がないようにする
+          nextInput.focus();
+        }
+      }
+    }
+  });
+});
+.input-table内のすべてのinput要素と#initialBalanceにinputイベントを追加し、入力があったときにupdateCalculations()を呼び出してリアルタイムで計算結果を更新している。
+keydownイベントでは、Enterキーが押されたときに、次の入力欄へフォーカスを移動します。値を引き継がないように次の入力欄を空にし、ユーザーが新しい値を入力できるようにしているが、deploy時はうまくいっていたが、今はうまくいってない気もしている。
