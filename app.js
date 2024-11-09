@@ -1,3 +1,6 @@
+// コードのメモはREADMEにまとめる
+
+// 変数を定義して、後続のコードでそれぞれの要素にイベントリスナーを追加したり、操作したりすることが容易になる
 document.addEventListener("DOMContentLoaded", function () {
   const ctx = document.getElementById('mychart').getContext('2d');
   const initialBalanceInput = document.getElementById('initialBalance');

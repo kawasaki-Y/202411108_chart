@@ -55,6 +55,7 @@
 - 次回トライしたいこと
 ・資金繰り表は最低でも半年間単位で確認したいので、半年間が可視化できる内容にしたいです
 ・どの項目もそうですが、特に経常支出額は細分化すると、多くの変数の集まりのため、分解した数値を再集計できる様な計算ロジックを組みたいです。
+・今回はグラフの種類を「line」（折れ線グラフ）としたが、余力があれば「bar」（棒グラフ）や「pie」（円グラフ）なども自由選択できる様にしたいです。
 
 ## ⑦質問・疑問・感想、シェアしたいこと等なんでも
 
@@ -64,3 +65,117 @@
 ・今回提出のものは、自分自身が使っているsample.1 pngとsample.2 pngで示す資金繰り計画書を、html・css・jsで再現できるか？がテーマでした。こう考えると、Excelやスプシで管理できるものを、webに直すメリットは何なのだろうか？と疑問に思いました。
 
 ・READMEには、まだ書ききれないことがあったので、提出時間が迫っているので一旦提出後に書き加えると思います。
+
+以下、JSのコードのメモ
+
+ブロック❶
+
+「document.addEventListener("DOMContentLoaded", function () {」
+・ウェブページが完全に表示されたら、この中のコードを動かすよ、という合図。
+・これがないと、ページがまだ途中で読み込まれているときにコードが動いてエラーになることがある 
+
+ 「const ctx = document.getElementById('mychart').getContext('2d');」
+・変数 ctx は、後のコードで Chart.js によってグラフを描画する際に使用/ 
+・document.getElementById('mychart') は、IDが mychart の < canvas > 要素を取得する 
+・getContext('2d')はChart.js などのライブラリを使ってグラフを描画する
+
+「const initialBalanceInput = document.getElementById('initialBalance');」
+ ・initialBalance の <input> 要素を取得し、変数 initialBalanceInput に格納する。それ以降のコードも意味は同じ。
+ ・初期の口座残高の入力を受け取るために使用する。
+ ・入力欄に数値を入力すると、スクリプトがその数値を使用して計算を行う/
+ 
+ 「const calculateButton = document.getElementById('calculateBalance');」
+  ・ IDが calculateBalance のボタン要素を取得し、変数 calculateButton に格納する
+  ・このボタンは、ユーザーがクリックすると計算を実行するために使用される
+  ・後でクリックイベントを登録し、ボタンを押したときに計算を実行する処理を追加できる/ 
+
+　「const downloadImageButton = document.getElementById('downloadImage');」
+  ・IDが downloadImage のボタン要素を取得し、変数 downloadImageButton に格納する。
+  ・生成されたグラフを画像としてダウンロードするために使用
+  ・この要素を取得することで、後でクリックイベントを登録し、ボタンが押されたときにグラフを画像として保存する処理を追加できる/ 
+
+  「const fileInput = document.getElementById('uploadExcel');」
+  ・IDが uploadExcel の <input>（タイプが file）要素を取得し、変数 fileInput に格納する
+  ・ユーザーがExcelファイルをアップロードするために使用
+  ・ファイルがアップロードされると、そのデータを読み込んでテーブルに反映するために使用される。/ 
+  
+  「const downloadExcelButton = document.getElementById('downloadExcel');」
+  ・IDが downloadExcel のボタン要素を取得し、変数 downloadExcelButton に格納する
+  ・計算されたデータをExcelファイルとしてダウンロードするために使用する
+  ・後にクリックイベントを登録することで、ボタンを押したときにその機能を実行する
+
+  ・これらの変数を定義することで、後続のコードでそれぞれの要素にイベントリスナーを追加したり、操作したりすることが容易になる。
+
+
+ブロック❷
+ウェブページのキャンバスに、「口座残高」を示す折れ線グラフを描くためのスペースを作っている。見た目やデータの設定を細かく調整できる。
+
+1. const myChart = new Chart(ctx, { ... });
+・ constを使って、変数「myChart」に新しいグラフを作って入れている。
+・ctxを使って、キャンバスにグラフを描くよ、という設定をしている。ブロック❶で「const ctx = document.getElementById('mychart').getContext('2d');」をしているので、キャンバスでmychartを拾ってくる。
+2. type: 'line',
+・ここでグラフの種類を「line」にして、折れ線グラフを表記している。他にも「bar」（棒グラフ）や「pie」（円グラフ）なども選べる。余力があれば、自由選択できる様にしたいものである。
+3. data: { ... }
+・ここでグラフのデータ（どんな情報を表示するか）を設定している。
+3.1 labels: ['10日', '15日', '20日', '25日', '月末'],
+・X軸のラベルを設定している。これは日付を目盛りとして設定している。この入力値がグラフの横軸に表示される。
+・5日単位の資金繰りということで、10日、15日、20日、25日、月末の値を使っている。
+3.2 datasets: [{ ... }]
+・グラフに表示されるデータのグループを設定している。
+・X軸、Y軸といった複数のデータセットを追加して、異なる２つの情報を1つのグラフに載せることができる。
+3.2.1 label: '口座残高',
+・グラフのデータの名前をつけるのに使用した。この名前はグラフの凡例として表示されており、今回は「口座残高」とした。
+3.2.2 data: [0, 0, 0, 0, 0],
+・実際にグラフに描かれる数字の初期値に使用している。テーブルで示した各日付に対応する口座残高数値が入る。
+・今はすべて0ですが、口座残高が変動すれば動かして変わる。
+3.2.3 backgroundColor: 'rgba(75, 192, 192, 0.2)',
+・折れ線のドットに薄く色をつけるための色設定をしている。「rgba(75, 192, 192, 0.2)」は、薄い緑色の半透明な色である。
+3.2.4 borderColor: 'rgba(75, 192, 192, 1)',
+・グラフの線の色を濃い緑色に設定している。
+3.2.5 borderWidth: 2,
+意味: グラフの線の幅を2ピクセルで設定している。
+4. options: { ... }
+・optionsで括ることで、グラフの詳細を設定する。どんな見た目にするか、どんな動きをするかなどを、ここで決めた。
+4.1 responsive: true,
+・レスポンシブ対応で、グラフが画面サイズに応じて大きさを自動変更する設定にしている。
+4.2 scales: { ... }
+・X軸やY軸の設定を行う。
+4.2.1 y: { ... }
+・その中でもY軸の設定をした。見た目や動作を決めている。
+4.2.1.1 beginAtZero: false,
+・計算の結果、銀行残高がマイナスになった場合の表記を考えて、Y軸が0から始まらないように設定している。
+4.2.1.2 title: { display: true, text: '残高' },
+・Y軸のタイトルを表示し、「残高」と書くように設定している。
+4.2.1.3 ticks: { callback: function(value) { ... } }
+・Y軸の目盛りに数字を表示する際のルールを決めている。
+callback: function(value):の関数を使って、数字が表示される前に少し加工する設定を行っている。この関数では、「Math.floor(value).toLocaleString()」を使って、数値を小数点以下を切り捨てて（floor(value)）、カンマ区切りの形式で表示（toLocaleString）するようにしています（例えば1000は「1,000」と表示）。
+
+ブロック❸
+function updateCalculations() {の関数を使って、最初の口座残高から始めて、売上や経費など2則演算して、最終的な口座残高を計算している。
+
+1. const initialBalance = Math.floor(parseFloat(initialBalanceInput.value)) || 0;
+・最初に入力された「初期の残高」を読み取って、それを数値として取り出しいる。ここを設定しないと、JSは計算プロセスで必要な初期残高を認識してくれない。
+・parseFloatで入力を数字に変換する。ここで文字列を入れたとしても、数字に変換される。
+・Math.floor: 数字の小数点以下を切り捨てて計算する。口座残高が小数点以下になることはないが、端数切り上げを統一ルールとした。
+・|| 0: もし入力が空っぽだったり数字に変換できなかった場合、残高は「0」になることとした。記号とか、数字と関係ない情報が入ったらエラーの原因になるため。
+2. let previousBalance = initialBalance;
+・「previousBalance」という名前の変数に初期残高を引数として代入している。
+・この変数を設定することで初期残高を変更する都度、口座残高も更新される。
+3. const salesInputs = document.querySelectorAll('.input-sales');
+・ページ内の「売上」の入力欄を全部まとめて探して、「salesInputs」という名前のリストに変換する。
+同じ意味のコード:
+expensesInputs: 経費の入力欄を探す。
+loanIncomeInputs: ローン収入の入力欄を探す。
+loanRepaymentInputs: ローン返済の入力欄を探す。
+equityInvestmentInputs: 資本投資の入力欄を探す。
+equitySaleInputs: 資本売却の入力欄を探す。
+subsidyInputs: 補助金の入力欄を探す。
+4. const operatingResults = document.querySelectorAll('.result-operating');
+・計算結果を表示する場所を探してリストにしている。ここで指定する変数は入力値ではなく、入力値に応じた結果のみを表記する場所である。計算後に結果を見せる場所をJSに教えてあげている。
+同じ意味のコード:
+financialResults: 財務の結果を表示する場所。
+totalResults: 合計の結果を表示する場所。
+balanceResults: 最終残高を表示する場所。
+5. const chartData = [];
+意味: 空のリスト「chartData」を作っている。これは後でグラフに表示するためのデータを入れるためである。
+6. 
